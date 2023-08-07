@@ -2,25 +2,25 @@ def solution(N, stages):
     answer = []
     
     # 1. 카운팅 배열 생성
-    cnt_arr = [0]*(N+2)
-    for stage in stages:
-        cnt_arr[stage] += 1
-        
-    # 2. 실패율 구하기
-    fail_rates = list()
-    total_sum = sum(cnt_arr)
+    cnt_arr = [0] * (N+2)
+    for s in stages:
+        cnt_arr[s] += 1
     
-    for idx in range(1, N+1):
-        if total_sum == 0:
-            fail_rates.append((0,idx))
+    # 2. 실패율 구하기
+    fail_rate = list()
+    leng = len(stages)
+    for i in range(1,N+1):
+        if leng == 0:
+            fail_rate.append((0, i))
         else:
-            fail_rates.append((cnt_arr[idx] / total_sum, idx)) 
-            total_sum -= cnt_arr[idx]
-            
-    fail_rates.sort(key= lambda x: (-x[0], x[1]))
-
-    # 3. idx를 answer로 옮기기
-    for fail in fail_rates:
-        answer.append(fail[1])
+            fail_rate.append((cnt_arr[i]/leng, i))
+            leng -= cnt_arr[i]
+    
+    # 3. 실패율 정렬
+    fail_rate.sort(key=lambda x : (-x[0],x[1]))
+    
+    for f in fail_rate:
+        a,b = f
+        answer.append(b)
     
     return answer
