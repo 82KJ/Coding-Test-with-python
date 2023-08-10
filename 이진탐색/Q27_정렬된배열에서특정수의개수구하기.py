@@ -2,51 +2,45 @@
 n, x = map(int, input().split())
 arr = list(map(int, input().split()))
 
-# 2. 왼쪽 경계값 찾기
-def get_left_boundary(arr, target, left, right):
-    
-    if left > right:
-        return -1
-    
+# 2. 왼쪽 타겟 찾기
+def find_left(arr, target, left, right):
+  while left <= right:
     mid = (left + right) // 2
-    
-    # 중앙값과 일치하더라도, 왼쪽 끝값인지 확인 필요
-    if arr[mid] == target and (mid == 0 or arr[mid-1] < target):
-        return mid
-    
+
+    # 왼쪽 끝 타겟을 찾은 경우
+    if arr[mid] == target and (mid == 0 or arr[mid] > arr[mid-1]):
+      return mid
+
+    # 타겟과 일치하지만 왼쪽 끝이 아닌 경우 또는 타겟보다 큰 경우
+    if arr[mid] >= target:
+      right = mid-1
+    # 타겟 보다 작은 경우
     else:
-        if arr[mid] < target:
-            return get_left_boundary(arr, target, mid+1, right)
-        elif arr[mid] >= target: # 중앙값과 일치해도, 왼쪽 끝값이 아닌 경우
-            return get_left_boundary(arr, target, left, mid-1)
-    
+      left = mid+1
 
-left_boundary = get_left_boundary(arr, x, 0, n-1)
+  return -1
 
-# 3. 오른쪽 경계값 찾기
-def get_right_boundary(arr, target, left, right):
-        
-    if left > right:
-        return -1
-    
+# 3. 오른쪽 타겟 찾기
+def find_right(arr, target, left, right):
+  while left <= right:
     mid = (left + right) // 2
-    
-    # 중앙값과 일치하더라도, 오른쪽 끝값인지 확인 필요
-    if arr[mid] == target and (mid == n-1 or arr[mid+1] > target):
-        return mid
-    
-    else:
-        if arr[mid] <= target: # 중앙값과 일치해도, 오른쪽 끝값이 아닌 경우
-            return get_right_boundary(arr, target, mid+1, right)
-        elif arr[mid] > target:
-            return get_right_boundary(arr, target, left, mid-1)
-    
-right_boundary = get_right_boundary(arr, x, 0, n-1)
 
+    # 오른쪽 끝 타겟을 찾은 경우
+    if arr[mid] == target and (mid == len(arr)-1 or arr[mid] < arr[mid+1]):
+      return mid
+
+    # 타겟과 일치하지만 오른쪽 끝이 아닌 경우 또는 타겟보다 작은 경우
+    if arr[mid] <= target:
+      left = mid+1
+    # 타겟보다 큰 경우
+    else:
+      right = mid-1
+  return -1
 
 # 4. 결과 출력
-if left_boundary == -1:
-    print(-1)
-else:
-    print(right_boundary - left_boundary + 1)
+left = find_left(arr, x, 0, n-1)
+right = find_right(arr, x, 0, n-1)
 
+if left == -1: print(-1)
+else:
+  print(right - left + 1)
