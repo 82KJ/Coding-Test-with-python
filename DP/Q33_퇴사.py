@@ -1,22 +1,26 @@
 # 1. 인풋 처리
 n = int(input())
 
-arr = []
+t = list()
+p = list()
 for i in range(n):
-    arr.append(list(map(int, input().split())))
+  a,b = map(int, input().split())
+  t.append(a)
+  p.append(b)
 
+# 2. dp 테이블 초기화
+dp = [0]*(n+1)
+
+# 3. dp 테이블 갱신 --> dp[i] = i~n일까지의 최대 수익
 max_val = 0
+for i in range(n-1, -1, -1):
+  next_day = i + t[i]
 
-# 2. DP 테이블 초기화 및 갱신 -> 점화식 = i~n까지 최대 이익
-DP = [0]*(n+1)
+  if next_day <= n:
+    dp[i] = max(p[i] + dp[next_day], max_val)
+    max_val = dp[i]
+  else:
+    dp[i] = max_val
 
-for i in range(n-1,-1,-1):
-    next_day = i + arr[i][0]
-    
-    if next_day <= n:
-        DP[i] = max(arr[i][1] + DP[next_day], max_val)
-        max_val = DP[i]
-    else:
-        DP[i] = max_val
-
-print(DP[0])
+# 4. 결과 출력
+print(max(dp))
