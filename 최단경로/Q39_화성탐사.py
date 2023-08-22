@@ -2,37 +2,42 @@ import heapq
 
 t = int(input())
 
-# 1. 테스트 케이스
 for _ in range(t):
-    # 2. 인풋 처리
-    n = int(input())
-    graph = list()
-    for i in range(n):
-        graph.append(list(map(int, input().split())))
-                     
-    INF = int(1e9)
-    distance = [[INF]*(n) for _ in range(n)]
+  # 1. 인풋 처리
+  n = int(input())
+  graph = list()
+  for _ in range(n):
+    graph.append(list(map(int, input().split())))
 
-    # 3. 다익스트라 알고리즘 진행
-    start = (graph[0][0], (0,0))
-    q = list()
-    heapq.heappush(q, start)
+  # 2. 다익스트라 적용
+  inf = int(1e9)
+  distances = [[inf]*n for _ in range(n)]
+  distances[0][0] = graph[0][0]
+  q = list()
+  heapq.heappush(q, (graph[0][0],(0,0)))
+
+  dy = [0,0,1,-1]
+  dx = [-1,1,0,0]
+  while q:
+    dist, now = heapq.heappop(q)
+    now_y,now_x = now
+
+    if dist > distances[now_y][now_x]: continue
+
+    for i in range(4):
+      ny = now_y + dy[i]                         
+      nx = now_x + dx[i]
+
+      if ny < 0 or nx < 0 or ny >= n or nx >= n : continue
+
+      cost = dist + graph[ny][nx]
+      if cost < distances[ny][nx]:
+        distances[ny][nx] = cost
+        heapq.heappush(q, (cost, (ny,nx)))
+
+  # 3. 결과 출력
+  print(distances[n-1][n-1])
     
-    dy = [-1,1,0,0]
-    dx = [0,0,-1,1]
-    while q:
-        cost, now = heapq.heappop(q)
-        
-        if distance[now[0]][now[1]] < cost: continue
-        
-        for i in range(4):
-            ny = now[0] + dy[i]
-            nx = now[1] + dx[i]
-            
-            if ny < 0 or nx < 0 or ny >= n or nx >= n: continue
-            
-            if cost + graph[ny][nx] < distance[ny][nx]:
-                distance[ny][nx] = cost + graph[ny][nx]
-                heapq.heappush(q, (distance[ny][nx], (ny,nx)))
-                
-    print(distance[n-1][n-1])
+  
+  
+                 
