@@ -2,32 +2,34 @@
 n,m = map(int, input().split())
 
 edges = list()
-for i in range(m):
-    a,b,c = map(int, input().split())
-    edges.append((c,a,b))
+for _ in range(m):
+  x,y,z = map(int, input().split())
+  edges.append((z,x,y))
+
 edges.sort()
 
-# 2. union&find 함수
+# 2. union & find 알고리즘
+parent = [i for i in range(n)]
 def find_parent(parent, x):
-    if parent[x] != x:
-        parent[x] = find_parent(parent, parent[x])
-    return parent[x]
+  if parent[x] != x:
+    parent[x] = find_parent(parent, parent[x])
+  return parent[x]
 
 def union_parent(parent, a, b):
-    a = find_parent(parent, a)
-    b = find_parent(parent, b)
-    
-    if a < b : parent[b] = a
-    else: parent[a] = b
+  a = find_parent(parent, a)
+  b = find_parent(parent, b)
 
-# 3. edges 순회하면서, cycle 생기면 추가 x
-parent = [i for i in range(n+1)]
+  if a < b : parent[b] = a
+  else: parent[a] = b
+    
+# 3. 크루스칼 알고리즘 적용
 res = 0
 for edge in edges:
-    c,a,b = edge
-    if find_parent(parent, a) != find_parent(parent, b):
-        union_parent(parent, a, b)
-    else:
-        res += c
+  z,x,y = edge
+  if find_parent(parent, x) != find_parent(parent,y):
+    union_parent(parent, x, y)
+  else:
+    res += z
 
 print(res)
+  

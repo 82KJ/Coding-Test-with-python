@@ -1,43 +1,46 @@
 # 1. 인풋 처리
 n,m = map(int, input().split())
 
-graph = [[0]*(n+1) for _ in range(n+1)]
-for i in range(1,n+1):
-    temp = list(map(int, input().split()))
-    for j in range(1,n+1):
-        graph[i][j] = temp[j-1]
+graph = list()
+for _ in range(n):
+  graph.append(list(map(int, input().split())))
 
-travel_plans = list(map(int, input().split()))
-parents = [i for _ in range(n+1)]
+plans = list(map(int, input().split()))
 
-# 2. union&find 함수
-def find_parent(parents, x):
-    if parents[x] != x:
-        parents[x] = find_parent(parents, parents[x])
-    return parents[x]
+# 2. union & find 적용해서 parent 갱신하기
+parent = [i for i in range(n+1)]
 
-def union_parent(parents, a, b):
-    a = find_parent(parents, a)
-    b = find_parent(parents, b)
-    
-    if a < b: parents[b] = a
-    else : parents[a] = b
+def find_parent(parent, x):
+  if parent[x] != x:
+    parent[x] = find_parent(parent, parent[x])
+  return parent[x]
 
-# 3. graph 순회하면서 union 진행
-for i in range(1,n+1):
-    for j in range(1,n+1):
-        if graph[i][j] == 1:
-            union_parent(parents, i, j)
+def union_parent(parent, a, b):
+  a = find_parent(parent,a)
+  b = find_parent(parent,b)
 
-# 4. 여행 계획이 모두 같은 parent를 가지는지 확인
+  if a < b : parent[b] = a
+  else: parent[a] = b
+
+for i in range(n):
+  for j in range(n):
+    if graph[i][j] == 1:
+      union_parent(parent, i+1, j+1)
+
+# 3. plan의 모든 여행지가 같은 서로소 집합인지 확인
 flag = True
-pp = find_parent(parents, travel_plans[0])
-for i in range(1, len(travel_plans)):
-    cp = find_parent(parents, travel_plans[i])
-    
-    if pp != cp:
-        flag = False
+prev = find_parent(parent, plans[0])
+for i in range(1,len(plans)):
+  cur = find_parent(parent, plans[i])
+  if prev != cur:
+    flag = False
+    break
+  prev = cur
 
-if flag == True: print("YES")
-else : print("NO")
-    
+if flag == True:
+  print("YES")
+else:
+  print("NO")
+  
+  
+
